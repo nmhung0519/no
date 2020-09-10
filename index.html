@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		#add {
+			font-weight: bold;
+			padding: 10px;
+			border-radius: 20px;
+			background: lightgrey;
+			position: absolute;
+			cursor: pointer;
+		}
+		#add:hover {
+			opacity: 0.8;
+		}
+		#sum {
+			margin-left: 100px;
+			font-weight: bold;
+			padding: 10px;
+			border-radius: 20px;
+			background: lightgrey;
+			position: absolute;
+			cursor: pointer;
+		}
+		.remove {
+			width: 20px; 
+			height: 20px; 
+			border-radius: 10px;
+			font-family: monospace;
+			text-align: center;
+			line-height: 20px;
+			color: white;
+			cursor: pointer;
+			background: red;
+		}
+		.remove:hover {
+			opacity: 0.6;
+		}
+		td {
+			padding: 0 10px 0 10px;
+		}
+		td>input {
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div style="height: 100px;">
+		<input style="width: 100%" id="input-2" />
+		<div id = "output-1"></div>
+		<div id = "output-2"></div>
+	</div>
+	<div id="add">
+		<span style="backgournd: lightgrey">Thêm</span>
+	</div>
+	<div id="sum">
+		<span>Tổng</span>
+	</div>
+	<div style="margin-top: 50px;">
+		<table style="background: lightgrey; width: 100%; table-layout: fixed;" >
+			<thead style="text-align: left">
+				<th style="width: 10px"></th>
+				<th style="width: 50px">1</th>
+				<th style="width: 120px">2</th>
+				<th style="width: 50px">3</th>
+				<th style="width: 100px">4</th>
+			</thead>
+			<tbody>
+				<tr style="height: 40px">
+					<td></td>
+					<td></td>	
+					<td></td>
+					<td></td>
+					<td id="sum-value" style="font-size: 25px; font-weight: bold; background: lightblue; text-align: right"><span>0</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script>
+		var input1;
+		var input2;
+		$("#input-1").focusout(function() {
+			input1 = $("#input-1").val();
+		})
+		$("#input-2").focusout(function() {
+			input2 = ($("#input-2").val()).split(",");
+		})
+		$("#add").click(function() {
+			$("tbody").append("<tr><td><div class='remove'>X</div></td><td><input class='name' /></td>	<td><input class='value' /></td><td><input class='point' /></td><td style='text-align: right'><span></span></td></tr>");
+		})
+		$("tbody").delegate(".remove", "click", function() {
+			$(event.target).parents("tr").remove();
+		})
+		$("#sum").click(function() {
+			var allsum = 0;
+			var count = $("tr").length;
+			for (var i = 2; i < count; i++) {
+				pre = 0;
+				var row = $($("tr")[i]);
+				data = "" + $(row.children()[2]).children()[0].value;
+				data = data.split(",");
+				var point = Number($(row.children()[3]).children()[0].value);
+				var sum = data.length * 21800 * point;
+				for (var j = 0; j < data.length; j++) {
+					var pos = -1;
+					do {
+						pos = input2.indexOf(data[j], pos + 1);
+						if (pos >= 0) sum += point * (-80000);
+					} while (pos >= 0);
+				}
+				$(row.children()[4]).children()[0].innerText = format(sum);
+				if (sum > 0) $(row.children()[4]).css("background", "green");
+				else $(row.children()[4]).css("background", "red");
+				console.log(sum);
+				allsum += sum;
+			}
+			$("#sum-value>span")[0].innerText = format(allsum);
+			if (allsum >= 0) $("#sum-value").css("color", "green");
+			else $("#sum-value").css("color", "red");
+		})
+		function format(x) {
+			if (x < 1000 && x > -1000) return "" + x;
+			var tmp = false;
+			if (x < 0) {
+				tmp = true;
+				x = -x;
+			}
+			x = "" + x;
+			result = x.substr(-3, 3);
+			x = x.substr(0, x.length - 3);
+			while (x != "") {
+				if (x.length <= 3) {
+					result = x + "." + result;
+					x = "";
+				}
+				else {
+					console.log(result);
+					result = x.substr(-3,3) + "." + result;
+					x = x.substr(0, x.length - 3);
+				}
+			}
+			if (tmp == true) result = "-" + result;
+			return result;
+		}
+	</script>
+</body>
+</html>
